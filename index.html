@@ -1,0 +1,85 @@
+<idoctype html>
+	<head>
+		<title>빨간독사를 피해라!</title>
+		<style>
+		body{background: url('./night.jpg');
+		background-size: 100px;}
+			.snake{
+				width: 800px; height: 80px;
+				/*background: url('snake.png');*/
+				/*background-size: 180px;*/
+				background-repeat: no-repeat;
+				animation: bMove 7s linear;
+			}
+			@keyframes bMove{
+				0%{ background-position: 1000px; opacity:1;}
+				100%{ background-position:0 0;opacity:1;}
+			}
+		</style>
+	</head>
+	<div id="time" style="font-size: 2em"></div>
+	<div id="displayMark" style="font-size: 2em">0</div>
+
+<body>
+	<script>
+		var timeD = setInterval(checkTime,100);
+		setTimeout(result,30000);
+		var game = setInterval(attachSnake,900);
+		var a = 0;
+		var mark = 0;
+		function checkTime(){
+			a=a+1;
+			console.log(a);
+			time.innerHTML="빨간독사는 잡지 마세요.<br> " + (299-a)/10 +"초 남았습니다."
+		}
+		function result(){
+			alert("게임이 끝났습니다. 당신의 점수는\n"+mark+"점입니다.");
+			clearInterval(game);
+			clearInterval(timeD);
+		}
+		function attachSnake(){
+			var t = document.createElement("div");
+			t.setAttribute("class","snake"); 
+			t.style.position = "absolute"; 
+			var color = randomBH(1,4);
+			t.style.background = "url('snake_" + randomBH(1,4) + ".png')no-repeat";
+			t.style.backgroundSize = "150px";
+			console.log(window.innerHeight, window.innerWidth);
+			t.style.top = randomBH(0,window.innerHeight)+"px";
+			t.style.left = randomBH(0,window.innerWidth)+"px";
+			t.addEventListener("animationend",remove);
+			t.onclick = function(){
+				markUp(this, color);
+			}
+			t.addEventListener("animationend",remove);
+			document.body.appendChild(t);
+		}
+		function markUp(t, color)
+		{
+			var markText = "";
+			if(color == 1){
+				mark -= 500;
+				markText = "빨간독사에게 물렸습니다! " + mark+"점으로 줄어듭니다.";
+				displayMark.style.fontSize = "2em";
+				displayMark.style.color = "red";
+			}else{
+				mark += 100;
+				markText = "잘했어! " + mark+"점이야!!";
+				displayMark.style.fontSize = "2em";
+				displayMark.style.color = "black";	
+			}
+			displayMark.innerHTML = markText;
+			remove(t);
+		}
+		function remove(){
+		var t = event.target;
+		t.parentNode.removeChild(t);
+	}
+		attachSnake();
+		function randomBH(min,max){
+			min=Math.ceil(min);
+			max=Math.floor(max);
+			return Math.floor(Math.random() * (max - min + 1)) + min;
+		}
+	</script>
+</body>
